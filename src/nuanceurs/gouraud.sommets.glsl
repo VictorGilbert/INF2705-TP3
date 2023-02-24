@@ -99,9 +99,25 @@ void main( void )
     // calcul de la composante ambiante du modèle
     vec4 coul = FrontMaterial.emission + FrontMaterial.ambient * LightModel.ambient;
 
-    // couleur du sommet
-    int j = 0;
-    // ... = calculerReflexion( j, L, N, O );
+    
+        // calculer la normale (N) qui sera interpolée pour le nuanceur de fragments
+    vec3 N = normalize(matrNormale * Normal);
 
+    // calculer la position (P) du sommet (dans le repère de la caméra)
+    vec3 pos = vec3( matrVisu * matrModel * Vertex );
+
+    // calculer le vecteur de la direction (L) de la lumière (dans le repère de la caméra)
+    //AttribsOut.lumiDir = ( matrVisu * LightSource.position ).xyz - pos;
+    // dans cet exemple, on décide plutôt que la direction (L) de la lumière est déjà dans le repère de la caméra
+
+    vec3 obsVec = vec3( 0.0, 0.0, 1.0 ) ; // on considère que l'observateur (la caméra) est à l'infini dans la direction (0,0,1)
+
+    vec3 O = normalize( obsVec );  // position de l'observateur
+    // calculer la réflexion
+    for (int j = 0; j < 3; j++){
+        vec3 lumiDir = ( LightSource.position[j] ).xyz;
+        vec3 L = normalize( lumiDir ); // vecteur vers la source lumineuse    
+        coul += calculerReflexion( j,L, N, O );
+    }
     AttribsOut.couleur = clamp( coul, 0.0, 1.0 );
 }
