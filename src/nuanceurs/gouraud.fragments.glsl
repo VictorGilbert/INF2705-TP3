@@ -66,7 +66,8 @@ void main( void )
 
     // vec4 coul = calculerReflexion( j, L, N, O );
 
-    FragColor = clamp(coul, 0.0, 1.0);//0.01*coul + vec4( 0.5, 0.5, 0.5, 1.0 ); // gris moche!
+    FragColor = clamp(coul, 0.0, 1.0);
+    //0.01*coul + vec4( 0.5, 0.5, 0.5, 1.0 ); // gris moche!
 
     // Pour « voir » les normales, on peut remplacer la couleur du fragment par la normale.
     // (Les composantes de la normale variant entre -1 et +1, il faut
