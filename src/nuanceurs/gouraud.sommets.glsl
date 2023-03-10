@@ -56,7 +56,7 @@ uniform mat3 matrNormale;
 
 layout(location=0) in vec4 Vertex;
 layout(location=2) in vec3 Normal;
-layout(location=8) in vec4 TexCoord;
+layout(location=8) in vec2 TexCoord;
 
 out Attribs {
     vec4 couleur;

@@ -466,21 +466,23 @@ void FenetreTP::initialiser()
      AUx1=0.8,   AUy1=0.25, AUx2=0.95, AUy2=0.45;   // l'Australie
 
      GLfloat texcoordsTerre[2*4*6] = {
-     MOx1,   MOy1,  MOx2,  MOy2,    // le Monde
-     ASx1,   ASy1,  ASx2, ASy2,    // l'Amérique du Sud
-     AMx1,  AMy1,  AMx2, AMy2,    // l'Afrique + Moyen-Orient
-     QCx1, QCy1, QCx2, QCy2,   // le Québec
-     EUx1,  EUy1,  EUx2, EUy2,  // l'Europe (avec l'Angleterre ;))
-     AUx1,   AUy1, AUx2, AUy2   // l'Australie
+         MOx1,   MOy1,  MOx2,  MOy1, MOx1, MOy2, MOx2, MOy2,      // le Monde
+         ASx1,   ASy1,  ASx2,  ASy1, ASx1, ASy2, ASx2, ASy2,      // l'Amérique du Sud
+         AMx1,   AMy1,  AMx2,  AMy1, AMx1, AMy2, AMx2, AMy2,      // l'Afrique + Moyen-Orient
+         QCx1,   QCy1,  QCx2,  QCy1, QCx1, QCy2, QCx2, QCy2,      // le Québec
+         EUx1,   EUy1,  EUx2,  EUy1, EUx1, EUy2, EUx2, EUy2,      // l'Europe (avec l'Angleterre ;))
+         AUx1,   AUy1,  AUx2,  AUy1, AUx1, AUy2, AUx2, AUy2,      // l'Australie
      };  // les coordonnées de texture pour la Terre (voir figure 15)
-     GLfloat texcoordsAutre[2*4*6] = { 
-         0, 0, 1, 0, 1, 1, 0, 1,
-         0, 0, 1, 0, 1, 1, 0, 1,
-         0, 0, 1, 0, 1, 1, 0, 1,
-         0, 0, 1, 0, 1, 1, 0, 1,
-         0, 0, 1, 0, 1, 1, 0, 1,
-         0, 0, 1, 0, 1, 1, 0, 1,
+
+     GLfloat texcoordsAutre[2 * 4 * 6] = {
+        0, 0, 1, 0, 0, 1, 1, 1,
+        0, 0, 1, 0, 0, 1, 1, 1,
+        0, 0, 1, 0, 0, 1, 1, 1,
+        0, 0, 1, 0, 0, 1, 1, 1,
+        0, 0, 1, 0, 0, 1, 1, 1,
+        0, 0, 1, 0, 0, 1, 1, 1,
      };  // (0,0), (+1,0), etc.
+
 
     // allouer les objets OpenGL
     glGenVertexArrays( 3, vao );
@@ -501,11 +503,11 @@ void FenetreTP::initialiser()
     // partie 2: charger les deux VBO pour les coordonnées de texture: celle pour la Terre sur le cube et pour les autres textures
     glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(texcoordsTerre), texcoordsTerre, GL_STATIC_DRAW);
-    glVertexAttribPointer(locTexCoord, 2, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(locTexCoord);
+    //glVertexAttribPointer(locTexCoord, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    //glEnableVertexAttribArray(locTexCoord);
 
-    //glBindBuffer(GL_ARRAY_BUFFER, vbo[3]);
-    //glBufferData(GL_ARRAY_BUFFER, sizeof(texcoordsAutre), texcoordsAutre, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[3]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(texcoordsAutre), texcoordsAutre, GL_STATIC_DRAW);
     //glVertexAttribPointer(locTexCoord, 2, GL_FLOAT, GL_FALSE, 0, 0);
     //glEnableVertexAttribArray(locTexCoord);
 
@@ -575,6 +577,17 @@ void afficherModele()
         glBindTexture( GL_TEXTURE_2D, texturesCoul[varsUnif.iTexCoul-1] );
     else
         glBindTexture( GL_TEXTURE_2D, 0 );
+
+    // Changement du vbo en cas de cube avec planete partie 2:
+    glBindVertexArray(vao[0]);
+    if( varsUnif.iTexCoul == 1 )
+        glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
+    else
+        glBindBuffer(GL_ARRAY_BUFFER, vbo[3]);
+    glVertexAttribPointer(locTexCoord, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(locTexCoord);
+
+
     glActiveTexture( GL_TEXTURE1 ); // l'unité de texture 1
     if ( varsUnif.iTexNorm )
         glBindTexture( GL_TEXTURE_2D, texturesNorm[varsUnif.iTexNorm-1] );
