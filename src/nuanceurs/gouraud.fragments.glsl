@@ -54,6 +54,7 @@ uniform sampler2D laTextureNorm;
 
 in Attribs {
     vec4 couleur;
+    vec2 texCoord;
 } AttribsIn;
 
 out vec4 FragColor;
@@ -73,4 +74,6 @@ void main( void )
     // (Les composantes de la normale variant entre -1 et +1, il faut
     // toutefois les convertir en une couleur entre 0 et +1 en faisant (N+1)/2.)
     //if ( afficheNormales ) FragColor = clamp( vec4( (N+1)/2, AttribsIn.couleur.a ), 0.0, 1.0 );
+
+    FragColor = texture( laTextureCoul, AttribsIn.texCoord.xy );
 }
