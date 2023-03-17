@@ -100,7 +100,7 @@ void main( void )
         vec3 L = normalize(AttribsIn.lightVec[j]); // Direction de lumieres
         coul += calculerReflexion( j, L, N, O );
     }
-    FragColor = clamp(coul, 0, 1);
+    FragColor = clamp(coul, 0.0, 1.0);
 
     // Pour « voir » les normales, on peut remplacer la couleur du fragment par la normale.
     // (Les composantes de la normale variant entre -1 et +1, il faut

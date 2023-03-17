@@ -65,19 +65,16 @@ void main( void )
     // ...
     vec4 coul = AttribsIn.couleur; // la composante ambiante déjà calculée (dans nuanceur de sommets)
 
-    // vec4 coul = calculerReflexion( j, L, N, O );
-
     FragColor = clamp(coul, 0.0, 1.0);
-    //0.01*coul + vec4( 0.5, 0.5, 0.5, 1.0 ); // gris moche!
 
     // Pour « voir » les normales, on peut remplacer la couleur du fragment par la normale.
     // (Les composantes de la normale variant entre -1 et +1, il faut
     // toutefois les convertir en une couleur entre 0 et +1 en faisant (N+1)/2.)
     //if ( afficheNormales ) FragColor = clamp( vec4( (N+1)/2, AttribsIn.couleur.a ), 0.0, 1.0 );
 
-    vec4 couleurTexture = texture( laTextureCoul, AttribsIn.texCoord.xy - vec2(tempsGlissement, 0) );
-    if(length(couleurTexture.rgb) < 0.5) {
-        discard;
-    }
-    FragColor = couleurTexture;
+    //vec4 couleurTexture = texture( laTextureCoul, AttribsIn.texCoord.xy - vec2(tempsGlissement, 0) );
+    //if(length(couleurTexture.rgb) < 0.5) {
+    //    discard;
+    //}
+    //FragColor += couleurTexture;
 }

@@ -75,6 +75,8 @@ vec4 calculerReflexion( in int j, in vec3 L, in vec3 N, in vec3 O ) // pour la l
 {
     vec4 coul = vec4(0);
 
+    coul += FrontMaterial.ambient * LightSource.ambient[j];
+
     // calculer l'éclairage seulement si le produit scalaire est positif
     float NdotL = max( 0.0, dot( N, L ) );
     if ( NdotL > 0.0 )
@@ -99,28 +101,24 @@ void main( void )
 
     // calcul de la composante ambiante du modèle
     vec4 coul = FrontMaterial.emission + FrontMaterial.ambient * LightModel.ambient;
-
     
         // calculer la normale (N) qui sera interpolée pour le nuanceur de fragments
     vec3 N = normalize(matrNormale * Normal);
 
     // calculer la position (P) du sommet (dans le repère de la caméra)
-    vec3 pos = ( matrVisu * matrModel * Vertex ).xyz;
+    vec3 pos = vec3( matrVisu * matrModel * Vertex );
+    vec3 obsVec = -pos ; // on considère que l'observateur (la caméra) est à l'infini dans la direction (0,0,1)
 
-    // calculer le vecteur de la direction (L) de la lumière (dans le repère de la caméra)
-    //AttribsOut.lightVec = ( matrVisu * LightSource.position ).xyz - pos;
-    // dans cet exemple, on décide plutôt que la direction (L) de la lumière est déjà dans le repère de la caméra
-
-    vec3 obsVec = vec3( 0, 0, -1.0 ) ; // on considère que l'observateur (la caméra) est à l'infini dans la direction (0,0,1)
 
     vec3 O = normalize( obsVec );  // position de l'observateur
+
+    // calculer le vecteur de la direction (L) de la lumière (dans le repère de la caméra)
     // calculer la réflexion
     for (int j = 0; j < 3; j++){
         vec3 lightVec = ( matrVisu * LightSource.position[j] ).xyz - pos;
         vec3 L = normalize( lightVec ); // vecteur vers la source lumineuse    
-        coul += calculerReflexion( j,L, N, O );
+        coul += calculerReflexion( j, L, N, O );
     }
-    //AttribsOut.couleur = clamp( coul, 0.0, 1.0 );
-
+    AttribsOut.couleur = clamp( coul, 0.0, 1.0 );
     AttribsOut.texCoord = TexCoord.xy;
 }
