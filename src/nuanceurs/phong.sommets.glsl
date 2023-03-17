@@ -62,6 +62,7 @@ out Attribs {
     vec3 lightVec[3];
     vec3 normale, obsVec;
     //vec4 couleur;
+    vec2 texCoord;
 } AttribsOut;
 
 void main( void )
@@ -82,4 +83,5 @@ void main( void )
     //AttribsOut.couleur = clamp( coul, 0.0, 1.0 );
 
     AttribsOut.obsVec = (-pos);
+    AttribsOut.texCoord = TexCoord.xy;
 }

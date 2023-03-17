@@ -57,6 +57,7 @@ uniform mat3 matrNormale;
 layout(location=0) in vec4 Vertex;
 layout(location=2) in vec3 Normal;
 layout(location=8) in vec2 TexCoord;
+//layout(location = 3) in vec4 Color;
 
 out Attribs {
     vec4 couleur;
@@ -78,12 +79,12 @@ vec4 calculerReflexion( in int j, in vec3 L, in vec3 N, in vec3 O ) // pour la l
     coul += FrontMaterial.ambient * LightSource.ambient[j];
 
     // calculer l'éclairage seulement si le produit scalaire est positif
-    float NdotL = max( 0.0, dot( N, L ) );
+    float NdotL = dot( N, L );
     if ( NdotL > 0.0 )
     {
         // calculer la composante diffuse
         coul += attenuation * FrontMaterial.diffuse * LightSource.diffuse[j] * NdotL;
-
+        //vec4(Color.x, Color.y, Color.z, 1)
         // calculer la composante spéculaire (Blinn ou Phong : spec = BdotN ou RdotO )
         float spec = ( utiliseBlinn ?
                        dot( normalize( L + O ), N ) : // dot( B, N )
@@ -96,6 +97,7 @@ vec4 calculerReflexion( in int j, in vec3 L, in vec3 N, in vec3 O ) // pour la l
 
 void main( void )
 {
+    // Nuanceur inspiré des exemples du cours, et code d'Antoine Soldati et Etienne Perron
     // appliquer la transformation standard du sommet (P * V * M * sommet)
     gl_Position = matrProj * matrVisu * matrModel * Vertex;
 

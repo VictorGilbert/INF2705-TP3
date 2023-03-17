@@ -56,6 +56,7 @@ in Attribs {
     vec3 lightVec[3];
     vec3 normale, obsVec;
     //vec4 couleur;
+    vec2 texCoord;
 } AttribsIn;
 
 out vec4 FragColor;
@@ -91,8 +92,8 @@ vec4 calculerReflexion( in int j, in vec3 L, in vec3 N, in vec3 O ) // pour la l
 
 void main( void )
 {
-    // ...
-    vec3 N = normalize(gl_FrontFacing? AttribsIn.normale : -AttribsIn.normale);
+    // Nuanceur inspiré des exemples du cours, et code d'Antoine Soldati et Etienne
+    vec3 N = normalize(AttribsIn.normale);
     vec3 O = normalize(AttribsIn.obsVec);
     //vec4 coul = AttribsIn.couleur; // la composante ambiante déjà calculée (dans nuanceur de sommets)
     vec4 coul = FrontMaterial.emission + FrontMaterial.ambient * LightModel.ambient;
@@ -106,4 +107,14 @@ void main( void )
     // (Les composantes de la normale variant entre -1 et +1, il faut
     // toutefois les convertir en une couleur entre 0 et +1 en faisant (N+1)/2.)
     // if ( afficheNormales ) FragColor = clamp( vec4( (N+1)/2, AttribsIn.couleur.a ), 0.0, 1.0 );
+
+        // Lorsqu'il y a une texture chargee
+    if (iTexCoul != 0) {
+        vec4 couleurTexture = texture(laTextureCoul, AttribsIn.texCoord.xy - vec2(tempsGlissement, 0));
+        // Transparence quand le texel est trop sombre
+        if (length(couleurTexture.rgb) < 0.5) {
+            discard;
+        }
+        FragColor *= couleurTexture;
+    }
 }
