@@ -108,7 +108,7 @@ void main( void )
     vec3 pos = ( matrVisu * matrModel * Vertex ).xyz;
 
     // calculer le vecteur de la direction (L) de la lumière (dans le repère de la caméra)
-    //AttribsOut.lumiDir = ( matrVisu * LightSource.position ).xyz - pos;
+    //AttribsOut.lightVec = ( matrVisu * LightSource.position ).xyz - pos;
     // dans cet exemple, on décide plutôt que la direction (L) de la lumière est déjà dans le repère de la caméra
 
     vec3 obsVec = vec3( 0, 0, -1.0 ) ; // on considère que l'observateur (la caméra) est à l'infini dans la direction (0,0,1)
@@ -116,8 +116,8 @@ void main( void )
     vec3 O = normalize( obsVec );  // position de l'observateur
     // calculer la réflexion
     for (int j = 0; j < 3; j++){
-        vec3 lumiDir = ( matrVisu * LightSource.position[j] ).xyz - pos;
-        vec3 L = normalize( lumiDir ); // vecteur vers la source lumineuse    
+        vec3 lightVec = ( matrVisu * LightSource.position[j] ).xyz - pos;
+        vec3 L = normalize( lightVec ); // vecteur vers la source lumineuse    
         coul += calculerReflexion( j,L, N, O );
     }
     //AttribsOut.couleur = clamp( coul, 0.0, 1.0 );

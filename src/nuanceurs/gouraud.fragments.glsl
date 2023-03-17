@@ -75,5 +75,9 @@ void main( void )
     // toutefois les convertir en une couleur entre 0 et +1 en faisant (N+1)/2.)
     //if ( afficheNormales ) FragColor = clamp( vec4( (N+1)/2, AttribsIn.couleur.a ), 0.0, 1.0 );
 
-    FragColor = texture( laTextureCoul, AttribsIn.texCoord.xy );
+    vec4 couleurTexture = texture( laTextureCoul, AttribsIn.texCoord.xy - vec2(tempsGlissement, 0) );
+    if(length(couleurTexture.rgb) < 0.5) {
+        discard;
+    }
+    FragColor = couleurTexture;
 }

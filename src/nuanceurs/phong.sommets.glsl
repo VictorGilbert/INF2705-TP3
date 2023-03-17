@@ -59,16 +59,27 @@ layout(location=2) in vec3 Normal;
 layout(location=8) in vec4 TexCoord;
 
 out Attribs {
-    vec4 couleur;
+    vec3 lightVec[3];
+    vec3 normale, obsVec;
+    //vec4 couleur;
 } AttribsOut;
 
 void main( void )
 {
     // appliquer la transformation standard du sommet (P * V * M * sommet)
     gl_Position = matrProj * matrVisu * matrModel * Vertex;
+    AttribsOut.normale = matrNormale * Normal;
+
+    vec3 pos = vec3(matrVisu * matrModel * Vertex);
+
+    // Direction vecteur lumiere
+    for (int i = 0; i < 3; i++) {
+        AttribsOut.lightVec[i] = (matrVisu * LightSource.position[i]).xyz - pos;
+    }
 
     // calcul de la composante ambiante du modèle
-    vec4 coul = vec4(0);
+    //vec4 coul = FrontMaterial.emission + FrontMaterial.ambient * LightModel.ambient;
+    //AttribsOut.couleur = clamp( coul, 0.0, 1.0 );
 
-    AttribsOut.couleur = clamp( coul, 0.0, 1.0 );
+    AttribsOut.obsVec = (-pos);
 }
