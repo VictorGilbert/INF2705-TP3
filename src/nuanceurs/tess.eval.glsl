@@ -49,14 +49,17 @@ vec4 interpole(vec4 v0, vec4 v1, vec4 v2, vec4 v3)
 void main()
 {
     // interpoler la position et les attributs selon gl_TessCoord
+    vec4 coul = texture(heightMapTex, gl_TessCoord.xy);
     vec4 pos = interpole(gl_in[0].gl_Position, gl_in[1].gl_Position, gl_in[2].gl_Position, gl_in[3].gl_Position);
+    pos.y += 10 * max(coul.r, 0);
+    
     gl_Position = pos;
     //AttribsOut.couleur = interpole(AttribsIn[0].couleur, AttribsIn[1].couleur, AttribsIn[2].couleur);
     //AttribsOut.couleur = interpole(AttribsIn[0].couleur, AttribsIn[1].couleur, AttribsIn[2].couleur, AttribsIn[3].couleur);
     
-    vec4 coul = texture(heightMapTex, AttribsIn.texCoord.xy);
     
-    AttribsOut.couleur = AttribsIn[gl_PrimitiveID].couleur;
+    //AttribsOut.couleur = AttribsIn[gl_PrimitiveID].couleur;
+    AttribsOut.couleur = coul;
     AttribsOut.texCoord = gl_TessCoord.xy;
 
     // on déforme la primitive et on multiplie par matrModel qui n'avait pas été fait
