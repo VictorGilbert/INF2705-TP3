@@ -517,10 +517,10 @@ void FenetreTP::initialiser()
     glBindVertexArray( vao[2] );
     glBindBuffer( GL_ARRAY_BUFFER, vbo[5] );
     GLfloat sol[] = {
-        -10.0, 0.0, -10.0, 0.0, 0.0,        
+        -10.0, 0.0, -10.0, 0.0, 0.0,
         -10.0, 0.0,  10.0, 0.0, 1.0,
-         10.0, 0.0, -10.0, 1.0, 0.0,
-         10.0, 0.0,  10.0, 1.0, 1.0
+         10.0, 0.0,  10.0, 1.0, 1.0,
+         10.0, 0.0, -10.0, 1.0, 0.0
     };
     glBufferData( GL_ARRAY_BUFFER, sizeof(sol), sol, GL_STATIC_DRAW );
     glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), 0 );
@@ -606,8 +606,21 @@ void afficherModele()
         if ( Etat::utiliseTess )
         {
             // partie 3a: afficher le terrain avec des GL_PATCHES
+            glBindVertexArray(vao[2]);
+            glActiveTexture(GL_TEXTURE0); // l'unité de texture 0
+            //glUniformMatrix4fv(locmatrModel, 1, GL_FALSE, matrModel);
+            glBindBuffer(GL_ARRAY_BUFFER, vbo[5]);
+            glBindTexture(GL_TEXTURE_2D, heightMapTex);
 
-        }
+            glVertexAttribPointer(locTexCoord, 2, GL_FLOAT, GL_FALSE, 0, 0);
+            glEnableVertexAttribArray(locTexCoord);
+
+
+            glDrawArrays(GL_PATCHES, 0, 4);
+
+            //glBindVertexArray(0);
+
+        }   
         else
         {
             glUniformMatrix3fv(locmatrNormale, 1, GL_TRUE, glm::value_ptr(glm::inverse(glm::mat3(matrVisu.getMatr() * matrModel.getMatr()))));

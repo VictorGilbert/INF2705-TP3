@@ -5,12 +5,19 @@
 layout(location=0) in vec4 Vertex;
 layout(location=8) in vec4 TexCoord;
 
+uniform mat4 matrVisu;
+uniform mat4 matrProj;
+
 out Attribs {
     vec2 texCoord;
+    vec4 couleur;
 } AttribsOut;
 
 void main( void )
 {
-    gl_Position = Vertex;
+    vec4 pos = matrProj * matrVisu * Vertex;
+    gl_Position = pos;
+
     AttribsOut.texCoord = TexCoord.st;
+    AttribsOut.couleur = vec4(1, 1, 1, 1);
 }
