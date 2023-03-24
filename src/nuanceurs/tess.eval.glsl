@@ -33,7 +33,6 @@ out Attribs{
 } AttribsOut;
 
 uniform mat4 matrModel;
-uniform bool deformer;
 
 uniform sampler2D heightMapTex;
 
@@ -61,11 +60,4 @@ void main()
     //AttribsOut.couleur = AttribsIn[gl_PrimitiveID].couleur;
     AttribsOut.couleur = coul;
     AttribsOut.texCoord = gl_TessCoord.xy;
-
-    // on déforme la primitive et on multiplie par matrModel qui n'avait pas été fait
-    if (deformer)
-    {
-        gl_Position.z = 1.0 - length(gl_Position.xy);
-        gl_Position = matrModel * gl_Position;
-    }
 }
