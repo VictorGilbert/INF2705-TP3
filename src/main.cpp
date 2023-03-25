@@ -608,18 +608,13 @@ void afficherModele()
             // partie 3a: afficher le terrain avec des GL_PATCHES
             glBindVertexArray(vao[2]);
             glActiveTexture(GL_TEXTURE0); // l'unité de texture 0
-            //glUniformMatrix4fv(locmatrModel, 1, GL_FALSE, matrModel);
+            
             glBindBuffer(GL_ARRAY_BUFFER, vbo[5]);
             glBindTexture(GL_TEXTURE_2D, heightMapTex);
 
             glVertexAttribPointer(locTexCoord, 2, GL_FLOAT, GL_FALSE, 0, 0);
-            glEnableVertexAttribArray(locTexCoord);
-
 
             glDrawArrays(GL_PATCHES, 0, 4);
-
-            //glBindVertexArray(0);
-
         }   
         else
         {

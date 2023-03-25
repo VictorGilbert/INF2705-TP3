@@ -90,10 +90,19 @@ vec4 calculerReflexion( in int j, in vec3 L, in vec3 N, in vec3 O ) // pour la l
     return( coul );
 }
 
+vec3 modifierNormale(vec3 N) {
+    vec3 couleur = texture(laTextureNorm, AttribsIn.texCoord.xy).rgb;
+    vec3 dN = normalize((couleur - 0.5) * 2.0);
+    N = normalize(N + dN);
+    return N;
+}
+
 void main( void )
 {
     // Nuanceur inspiré des exemples du cours, et code d'Antoine Soldati et Etienne
     vec3 N = normalize(AttribsIn.normale);
+    if (iTexNorm != 0) N = modifierNormale(N);
+
     vec3 O = normalize(AttribsIn.obsVec);
     //vec4 coul = AttribsIn.couleur; // la composante ambiante déjà calculée (dans nuanceur de sommets)
     vec4 coul = FrontMaterial.emission + FrontMaterial.ambient * LightModel.ambient;

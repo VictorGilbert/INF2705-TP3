@@ -23,13 +23,11 @@
 layout(quads) in;
 
 in Attribs{
-    vec2 texCoord;  //
-    vec4 couleur; //
+    vec2 texCoord;
 } AttribsIn[];
 
 out Attribs{
     vec4 couleur;
-    vec2 texCoord;
 } AttribsOut;
 
 uniform mat4 matrModel;
@@ -38,26 +36,19 @@ uniform sampler2D heightMapTex;
 
 vec4 interpole(vec4 v0, vec4 v1, vec4 v2, vec4 v3)
 {
-    // mix( x, y, f ) = x * (1-f) + y * f.
     vec4 v01 = mix(v0, v1, gl_TessCoord.x);
     vec4 v32 = mix(v3, v2, gl_TessCoord.x);
     return mix(v01, v32, gl_TessCoord.y);
 }
-
 
 void main()
 {
     // interpoler la position et les attributs selon gl_TessCoord
     vec4 coul = texture(heightMapTex, gl_TessCoord.xy);
     vec4 pos = interpole(gl_in[0].gl_Position, gl_in[1].gl_Position, gl_in[2].gl_Position, gl_in[3].gl_Position);
-    pos.y += 10 * max(coul.r, 0);
+    pos.y += 10 * coul.r;
     
     gl_Position = pos;
-    //AttribsOut.couleur = interpole(AttribsIn[0].couleur, AttribsIn[1].couleur, AttribsIn[2].couleur);
-    //AttribsOut.couleur = interpole(AttribsIn[0].couleur, AttribsIn[1].couleur, AttribsIn[2].couleur, AttribsIn[3].couleur);
     
-    
-    //AttribsOut.couleur = AttribsIn[gl_PrimitiveID].couleur;
     AttribsOut.couleur = coul;
-    AttribsOut.texCoord = gl_TessCoord.xy;
 }

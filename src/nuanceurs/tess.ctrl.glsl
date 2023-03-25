@@ -28,12 +28,10 @@ uniform float TessLevelOuter;
 
 in Attribs{
     vec2 texCoord;
-    vec4 couleur;
 } AttribsIn[];
 
 out Attribs{
     vec2 texCoord;
-    vec4 couleur;
 } AttribsOut[];
 
 void main()
@@ -55,5 +53,4 @@ void main()
 
     // copier les autres attributs vers la sortie
     AttribsOut[gl_InvocationID].texCoord = AttribsIn[gl_InvocationID].texCoord;
-    AttribsOut[gl_InvocationID].couleur = AttribsIn[gl_InvocationID].couleur;
 }
