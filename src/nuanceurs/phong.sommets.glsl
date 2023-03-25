@@ -63,6 +63,7 @@ out Attribs {
     vec3 normale, obsVec;
     //vec4 couleur;
     vec2 texCoord;
+    vec3 spotDirection[3];
 } AttribsOut;
 
 void main( void )
@@ -76,6 +77,7 @@ void main( void )
     // Direction vecteur lumiere
     for (int i = 0; i < 3; i++) {
         AttribsOut.lightVec[i] = (matrVisu * LightSource.position[i]).xyz - pos;
+        AttribsOut.spotDirection[i] = mat3(matrVisu) * -LightSource.spotDirection[i];
     }
 
     // calcul de la composante ambiante du modèle

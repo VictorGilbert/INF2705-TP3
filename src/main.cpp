@@ -672,7 +672,7 @@ void afficherLumieres()
     for ( int i = 0 ; i < 3 ; ++i )
     {
         glVertexAttrib3f( locColorBase, 2*LightSource.diffuse[i].r, 2*LightSource.diffuse[i].g, 2*LightSource.diffuse[i].b ); // couleur
-#if 0
+#if 1
         // dessiner une ligne vers le spot
         GLfloat coords[] =
         {

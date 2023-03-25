@@ -65,10 +65,24 @@ out Attribs {
 } AttribsOut;
 
 
-float calculerSpot( in vec3 D, in vec3 L, in vec3 N )
+float calculerSpot(in vec3 D, in vec3 L, in vec3 N)
 {
     float spotFacteur = 0.0;
-    return( spotFacteur );
+
+    if (dot(D, N) >= 0)
+    {
+        float spotDot = dot(L, D);
+        float cosInner = cos(radians(LightSource.spotAngleOuverture));
+        float cosOuter = pow(cosInner, 1.01 + LightSource.spotExponent / 2);
+        if (utiliseDirect) {
+            spotFacteur = smoothstep(cosOuter, cosInner, spotDot);
+        }
+        else if (spotDot > cosInner) {
+            spotFacteur = pow(spotDot, LightSource.spotExponent);
+        }
+    }
+
+    return(spotFacteur);
 }
 
 float attenuation = 1.0;
@@ -118,8 +132,12 @@ void main( void )
     // calculer la réflexion
     for (int j = 0; j < 3; j++){
         vec3 lightVec = ( matrVisu * LightSource.position[j] ).xyz - pos;
-        vec3 L = normalize( lightVec ); // vecteur vers la source lumineuse    
-        coul += calculerReflexion( j, L, N, O );
+        vec3 L = normalize( lightVec ); // vecteur vers la source lumineuse
+        coul += calculerReflexion(j, L, N, O);
+        if (utiliseSpot) {
+            vec3 D = normalize(mat3(matrVisu) * -LightSource.spotDirection[j]);
+            coul *= calculerSpot(D, L, N);
+        }
     }
     AttribsOut.couleur = clamp( coul, 0.0, 1.0 );
     AttribsOut.texCoord = TexCoord.xy;
