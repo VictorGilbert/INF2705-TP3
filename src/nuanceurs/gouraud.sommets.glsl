@@ -57,6 +57,7 @@ uniform mat3 matrNormale;
 layout(location=0) in vec4 Vertex;
 layout(location=2) in vec3 Normal;
 layout(location=8) in vec2 TexCoord;
+//layout(location=2) in vec2 TexNorm;
 //layout(location = 3) in vec4 Color;
 
 out Attribs {
@@ -89,7 +90,6 @@ float attenuation = 1.0;
 vec4 calculerReflexion( in int j, in vec3 L, in vec3 N, in vec3 O ) // pour la lumière j
 {
     vec4 coul = vec4(0);
-
     coul += FrontMaterial.ambient * LightSource.ambient[j];
 
     // calculer l'éclairage seulement si le produit scalaire est positif
@@ -127,6 +127,7 @@ void main( void )
 
 
     vec3 O = normalize( obsVec );  // position de l'observateur
+    float[3] spots;
 
     // calculer le vecteur de la direction (L) de la lumière (dans le repère de la caméra)
     // calculer la réflexion
@@ -134,10 +135,17 @@ void main( void )
         vec3 lightVec = ( matrVisu * LightSource.position[j] ).xyz - pos;
         vec3 L = normalize( lightVec ); // vecteur vers la source lumineuse
         coul += calculerReflexion(j, L, N, O);
+        //AttribsOut.spotDirection[i] = mat3(matrVisu) * -LightSource.spotDirection[i];
         if (utiliseSpot) {
             vec3 D = normalize(mat3(matrVisu) * -LightSource.spotDirection[j]);
-            coul *= calculerSpot(D, L, N);
+            spots[j] = calculerSpot(D, L, N);
         }
+    }
+    //On applique le spot pour chaque couleur
+    if (utiliseSpot) {
+        coul.x *= spots[0];
+        coul.y *= spots[1];
+        coul.z *= spots[2];
     }
     AttribsOut.couleur = clamp( coul, 0.0, 1.0 );
     AttribsOut.texCoord = TexCoord.xy;

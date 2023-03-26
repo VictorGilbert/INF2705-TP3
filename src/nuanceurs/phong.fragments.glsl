@@ -114,21 +114,27 @@ vec3 modifierNormale(vec3 N) {
 
 void main( void )
 {
-    // Nuanceur inspiré des exemples du cours, et code d'Antoine Soldati et Etienne
+    // Nuanceur inspiré des exemples du cours, et code d'Antoine Soldati et Etienne Perron
     vec3 N = normalize(AttribsIn.normale);
     if (iTexNorm != 0) N = modifierNormale(N);
 
     vec3 O = normalize(AttribsIn.obsVec);
     //vec4 coul = AttribsIn.couleur; // la composante ambiante déjà calculée (dans nuanceur de sommets)
     vec4 coul = FrontMaterial.emission + FrontMaterial.ambient * LightModel.ambient;
+    if (utiliseSpot) {
+        coul = vec4(0);
+    }
     for(int j = 0; j < 3; j++) {
         vec3 L = normalize(AttribsIn.lightVec[j]); // Direction de lumieres
-        coul += calculerReflexion( j, L, N, O );
-        if (utiliseSpot) {
+
+        if (!utiliseSpot) {
+            coul += calculerReflexion( j, L, N, O );
+        } else {
             vec3 D = normalize(AttribsIn.spotDirection[j]);
-            coul *= calculerSpot(D, L, N);
+            coul += calculerReflexion( j, L, N, O )* calculerSpot(D, L, N);
         }
     }
+
     FragColor = clamp(coul, 0.0, 1.0);
 
     // Pour « voir » les normales, on peut remplacer la couleur du fragment par la normale.
