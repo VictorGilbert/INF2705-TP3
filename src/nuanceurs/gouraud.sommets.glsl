@@ -93,12 +93,12 @@ vec4 calculerReflexion( in int j, in vec3 L, in vec3 N, in vec3 O ) // pour la l
     coul += FrontMaterial.ambient * LightSource.ambient[j];
 
     // calculer l'éclairage seulement si le produit scalaire est positif
-    float NdotL = dot( N, L );
+    float NdotL = max( 0.0, dot( N, L ) );
     if ( NdotL > 0.0 )
     {
         // calculer la composante diffuse
         coul += attenuation * FrontMaterial.diffuse * LightSource.diffuse[j] * NdotL;
-        //vec4(Color.x, Color.y, Color.z, 1)
+
         // calculer la composante spéculaire (Blinn ou Phong : spec = BdotN ou RdotO )
         float spec = ( utiliseBlinn ?
                        dot( normalize( L + O ), N ) : // dot( B, N )
@@ -115,16 +115,14 @@ void main( void )
     // appliquer la transformation standard du sommet (P * V * M * sommet)
     gl_Position = matrProj * matrVisu * matrModel * Vertex;
 
-    // calcul de la composante ambiante du modèle
-    vec4 coul = FrontMaterial.emission + FrontMaterial.ambient * LightModel.ambient;
-    
         // calculer la normale (N) qui sera interpolée pour le nuanceur de fragments
     vec3 N = normalize(matrNormale * Normal);
-
     // calculer la position (P) du sommet (dans le repère de la caméra)
     vec3 pos = vec3( matrVisu * matrModel * Vertex );
     vec3 obsVec = -pos ; // on considère que l'observateur (la caméra) est à l'infini dans la direction (0,0,1)
-
+    
+    // calcul de la composante ambiante du modèle
+    vec4 coul = FrontMaterial.emission + FrontMaterial.ambient * LightModel.ambient;
 
     vec3 O = normalize( obsVec );  // position de l'observateur
 
@@ -133,10 +131,12 @@ void main( void )
     for (int j = 0; j < 3; j++){
         vec3 lightVec = ( matrVisu * LightSource.position[j] ).xyz - pos;
         vec3 L = normalize( lightVec ); // vecteur vers la source lumineuse
-        coul += calculerReflexion(j, L, N, O);
         if (utiliseSpot) {
             vec3 D = normalize(mat3(matrVisu) * -LightSource.spotDirection[j]);
-            coul *= calculerSpot(D, L, N);
+            coul += calculerReflexion( j, L, N, O ) * calculerSpot(D, L, N);
+        }
+        else {
+            coul += calculerReflexion( j, L, N, O );
         }
     }
     AttribsOut.couleur = clamp( coul, 0.0, 1.0 );

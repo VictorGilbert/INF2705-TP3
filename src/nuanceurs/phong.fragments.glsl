@@ -119,14 +119,16 @@ void main( void )
     if (iTexNorm != 0) N = modifierNormale(N);
 
     vec3 O = normalize(AttribsIn.obsVec);
-    //vec4 coul = AttribsIn.couleur; // la composante ambiante déjà calculée (dans nuanceur de sommets)
+
     vec4 coul = FrontMaterial.emission + FrontMaterial.ambient * LightModel.ambient;
     for(int j = 0; j < 3; j++) {
         vec3 L = normalize(AttribsIn.lightVec[j]); // Direction de lumieres
-        coul += calculerReflexion( j, L, N, O );
         if (utiliseSpot) {
             vec3 D = normalize(AttribsIn.spotDirection[j]);
-            coul *= calculerSpot(D, L, N);
+            coul += calculerReflexion(j, L, N, O) * calculerSpot(D, L, N);
+        }
+        else {
+            coul += calculerReflexion(j, L, N, O);
         }
     }
     FragColor = clamp(coul, 0.0, 1.0);

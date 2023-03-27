@@ -80,10 +80,6 @@ void main( void )
         AttribsOut.spotDirection[i] = mat3(matrVisu) * -LightSource.spotDirection[i];
     }
 
-    // calcul de la composante ambiante du modèle
-    //vec4 coul = FrontMaterial.emission + FrontMaterial.ambient * LightModel.ambient;
-    //AttribsOut.couleur = clamp( coul, 0.0, 1.0 );
-
     AttribsOut.obsVec = (-pos);
     AttribsOut.texCoord = TexCoord.xy;
 }
